@@ -23,4 +23,9 @@ class CianSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
+        for estate_object in response.css('[data-name="CardComponent"]'):
+            yield {
+                'author': estate_object.xpath('span/small/text()').get(),
+                'text': estate_object.css('span.text::text').get(),
+            }
         self.log(response.request.headers.get("User-Agent"))
