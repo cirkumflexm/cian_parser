@@ -1,5 +1,7 @@
 venv/
 tutorial/
 cian_parser/
+__pycache__/
+.idea/
 /main.py
 /test.py
