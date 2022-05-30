@@ -5,4 +5,4 @@ __pycache__/
 .idea/
 /main.py
 /test.py
-#cian/cian/local_settings.py
+cian/cian/local_settings.py
