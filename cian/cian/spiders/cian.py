@@ -1,5 +1,7 @@
 import scrapy
 
+from cian.cian.local_settings import proxy
+
 
 class CianSpider(scrapy.Spider):
     name = "cian"
@@ -20,7 +22,10 @@ class CianSpider(scrapy.Spider):
     def start_requests(self):
         for page_number in range(1, 2):
             url = self.build_url(page_number=page_number)
-            yield scrapy.Request(url=url, callback=self.parse)
+            cian_request = scrapy.Request(url=url, callback=self.parse, meta={'proxy': proxy})
+            if proxy != '':
+                cian_request.meta = {'proxy': proxy}
+            yield cian_request
 
     def parse(self, response):
         for estate_object in response.css('[data-name="CardComponent"]'):
@@ -31,5 +36,6 @@ class CianSpider(scrapy.Spider):
                 'address': address,
                 'price': estate_object.css('[data-mark="MainPrice"]>span::text').get(),
                 'price_square': estate_object.css('[data-mark="PriceInfo"]::text').get(),
+                'owner': estate_object.css('._93444fe79c--name-container--enElO>span::text').get(),
             }
         self.log(response.request.headers.get("User-Agent"))

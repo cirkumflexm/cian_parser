@@ -88,13 +88,14 @@ DOWNLOAD_DELAY = 15
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 DOWNLOADER_MIDDLEWARES = {
-                             "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": None,
-                             "scrapy.downloadermiddlewares.retry.RetryMiddleware": None,
-                             "scrapy_fake_useragent.middleware.RandomUserAgentMiddleware": 400,
-                             "scrapy_fake_useragent.middleware.RetryUserAgentMiddleware": 401,
+                            "scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware": 1,
+                            "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": None,
+                            "scrapy.downloadermiddlewares.retry.RetryMiddleware": None,
+                            "scrapy_fake_useragent.middleware.RandomUserAgentMiddleware": 400,
+                            "scrapy_fake_useragent.middleware.RetryUserAgentMiddleware": 401,
                          }
 FAKEUSERAGENT_PROVIDERS = [
-                              "scrapy_fake_useragent.providers.FakerProvider",
-                              "scrapy_fake_useragent.providers.FakeUserAgentProvider",
-                              "scrapy_fake_useragent.providers.FixedUserAgentProvider",
+                            "scrapy_fake_useragent.providers.FakerProvider",
+                            "scrapy_fake_useragent.providers.FakeUserAgentProvider",
+                            "scrapy_fake_useragent.providers.FixedUserAgentProvider",
                           ]
