@@ -18,14 +18,18 @@ class CianSpider(scrapy.Spider):
         return url.format(page_number=page_number, region=region, offer_type=offer_type, type_object=type_object)
 
     def start_requests(self):
-        for page_number in range(1, 3):
+        for page_number in range(1, 2):
             url = self.build_url(page_number=page_number)
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
         for estate_object in response.css('[data-name="CardComponent"]'):
+            address_list = estate_object.css('[data-name="GeoLabel"]::text').getall()
+            address = ', '.join(address_list)
             yield {
-                'author': estate_object.xpath('span/small/text()').get(),
-                'text': estate_object.css('span.text::text').get(),
+                'title': estate_object.css('[data-mark="OfferTitle"]>span::text').get(),
+                'address': address,
+                'price': estate_object.css('[data-mark="MainPrice"]>span::text').get(),
+                'price_square': estate_object.css('[data-mark="PriceInfo"]::text').get(),
             }
         self.log(response.request.headers.get("User-Agent"))
