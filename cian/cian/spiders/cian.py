@@ -1,6 +1,6 @@
 import scrapy
 
-from cian.cian.local_settings import proxy
+from cian.local_settings import proxy
 
 
 class CianSpider(scrapy.Spider):
@@ -23,8 +23,6 @@ class CianSpider(scrapy.Spider):
         for page_number in range(1, 2):
             url = self.build_url(page_number=page_number)
             cian_request = scrapy.Request(url=url, callback=self.parse, meta={'proxy': proxy})
-            if proxy != '':
-                cian_request.meta = {'proxy': proxy}
             yield cian_request
 
     def parse(self, response):
@@ -34,8 +32,9 @@ class CianSpider(scrapy.Spider):
             yield {
                 'title': estate_object.css('[data-mark="OfferTitle"]>span::text').get(),
                 'address': address,
-                'price': estate_object.css('[data-mark="MainPrice"]>span::text').get(),
-                'price_square': estate_object.css('[data-mark="PriceInfo"]::text').get(),
+                'price': estate_object.css('[data-mark="MainPrice"]>span::text').get()[:-2],
+                'price_square': estate_object.css('[data-mark="PriceInfo"]::text').get()[:-5],
                 'owner': estate_object.css('._93444fe79c--name-container--enElO>span::text').get(),
+                'link': estate_object.css('[data-name="LinkArea"]>a').attrib['href'],
             }
         self.log(response.request.headers.get("User-Agent"))
