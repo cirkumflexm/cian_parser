@@ -6,3 +6,4 @@ __pycache__/
 /main.py
 /test.py
 cian/cian/local_settings.py
+*/__pycache__/
