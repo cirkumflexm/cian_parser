@@ -5,6 +5,7 @@ from cian.local_settings import proxy
 
 class CianSpider(scrapy.Spider):
     name = "cian"
+    iteration_repeat_request = 5
 
     def build_url(self, page_number=1, region='4581', offer_type='flat', type_object='sale'):
         """
@@ -26,7 +27,13 @@ class CianSpider(scrapy.Spider):
             yield cian_request
 
     def parse(self, response):
-        for estate_object in response.css('[data-name="CardComponent"]'):
+        ads = response.css('[data-name="CardComponent"]')
+        self.log(len(ads))
+        if len(ads) == 0 and response.status == 200 and self.iteration_repeat_request > 0:
+            self.log('Некоректная страница запрашиваем еще раз')
+            self.iteration_repeat_request -= 1
+            yield response.follow(response.url, callback=self.parse, dont_filter=True)
+        for estate_object in ads:
             address_list = estate_object.css('[data-name="GeoLabel"]::text').getall()
             address = ', '.join(address_list)
             yield {
