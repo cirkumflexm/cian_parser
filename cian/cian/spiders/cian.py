@@ -33,15 +33,16 @@ class CianSpider(scrapy.Spider):
             self.log('Некоректная страница запрашиваем еще раз')
             self.iteration_repeat_request -= 1
             yield response.follow(response.url, callback=self.parse, dont_filter=True)
-        for estate_object in ads:
-            address_list = estate_object.css('[data-name="GeoLabel"]::text').getall()
-            address = ', '.join(address_list)
-            yield {
-                'title': estate_object.css('[data-mark="OfferTitle"]>span::text').get(),
-                'address': address,
-                'price': estate_object.css('[data-mark="MainPrice"]>span::text').get()[:-2],
-                'price_square': estate_object.css('[data-mark="PriceInfo"]::text').get()[:-5],
-                'owner': estate_object.css('._93444fe79c--name-container--enElO>span::text').get(),
-                'link': estate_object.css('[data-name="LinkArea"]>a').attrib['href'],
-            }
+        else:
+            for estate_object in ads:
+                address_list = estate_object.css('[data-name="GeoLabel"]::text').getall()
+                address = ', '.join(address_list)
+                yield {
+                    'title': estate_object.css('[data-mark="OfferTitle"]>span::text').get(),
+                    'address': address,
+                    'price': estate_object.css('[data-mark="MainPrice"]>span::text').get()[:-2],
+                    'price_square': estate_object.css('[data-mark="PriceInfo"]::text').get()[:-5],
+                    'owner': estate_object.css('._93444fe79c--name-container--enElO>span::text').get(),
+                    'link': estate_object.css('[data-name="LinkArea"]>a').attrib['href'],
+                }
         self.log(response.request.headers.get("User-Agent"))
